@@ -1,0 +1,37 @@
+#!/usr/bin/env python
+
+import mechanize
+import sys
+
+# Store your username & password in Credentials.txt in different lines
+credentials = "Credentials.txt"
+
+
+# instantiate mechanize browser
+br = mechanize.Browser()
+try:
+	br.open("https://internet.iitb.ac.in/index.php")
+except Exception, e:
+	br.close()
+	sys.exit("Error opening url | "+str(e))
+
+
+# Check Authentication status
+if(br.geturl() == "https://internet.iitb.ac.in/index.php"):
+	# Read file: credentials & retrieve username and password
+	with open(credentials,'r') as infile:
+		username=infile.readline().strip()
+		password=infile.readline().strip()
+
+	# Authenticate @ internet.iitb.ac.in
+	br.select_form(name="auth")
+	br["uname"] = username
+	br["passwd"] = password
+	response = br.submit()  # submit current form
+	print "Authenticated"
+# If already Authenticated then do nothing
+else:
+	print "Already authenticated"
+
+# destroy instantiation of mechanize browser
+br.close()
